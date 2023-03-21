@@ -12,44 +12,23 @@ setChartHeight();
 
 
 //// DESCARGA IMAGEN ////
-let innerCanvas;
+async function downloadImage() {
+  const image = await fetch(document.getElementById('chartDw').getElementsByClassName('chart-img')[0].src)
+  const imageBlog = await image.blob()
+  const imageURL = URL.createObjectURL(imageBlog)
 
-function setChartCanvas() {
-    //Invisibilizamos el iframe
-    document.getElementById('chartDw').getElementsByTagName('iframe')[0].style.display = 'none';
-    //Visibilizamos la imagen Datawrapper 
-    document.getElementById('chartDw').getElementsByClassName('chart-img')[0].style.display = 'block';
-    //Ejecutamos la operación con HTML2CANVAS
-    html2canvas(
-        document.querySelector("#chartBlock"), 
-        {
-            width: document.querySelector("#chartBlock").clientWidth, 
-            height: document.querySelector("#chartBlock").clientHeight, 
-            imageTimeout: 3000, 
-            useCORS: true
-        }
-    )
-    .then(canvas => { 
-        innerCanvas = canvas;
-        //Visibilizamos el frame
-        document.getElementById('chartDw').getElementsByTagName('iframe')[0].style.display = 'block';
-        //Invisiblizamos la imagen
-        document.getElementById('chartDw').getElementsByClassName('chart-img')[0].style.display = 'none';
-    });
-}
-
-function setChartCanvasImage() {    
-    let image = innerCanvas.toDataURL();
-    let aDownloadLink = document.createElement('a');
-    aDownloadLink.download = 'grafico_enr'; //Posibilidad de cambiar el nombre ¡¡¡MODIFICAR!!!
-    aDownloadLink.href = image;
-    aDownloadLink.click();
+  const link = document.createElement('a');
+  link.href = imageURL;
+  link.download = 'grafico_enr';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 let pngDownload = document.getElementById('pngImage');
 
 pngDownload.addEventListener('click', function(){
-    setChartCanvasImage();
+    downloadImage();
 });
 //// FINAL - DESCARGA IMAGEN ////
 
@@ -103,7 +82,7 @@ for(let i = 0; i < tabs.length; i++) {
         //Obtenemos nueva imagen 
         if(i != 0 && tabCount != 1) {
             tabCount = 1;
-            setChartCanvas();
+            //setChartCanvas();
         }
         //Mostramos nueva pestaña
         document.getElementsByClassName('chart-main')[0].scrollIntoView();
